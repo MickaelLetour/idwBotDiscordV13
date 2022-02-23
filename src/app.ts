@@ -1,4 +1,5 @@
-import {Client, Intents} from "discord.js";
+import * as fs from "fs";
+import {Client, Collection, Intents} from "discord.js";
 import 'dotenv/config';
 import { registerCommands } from './commands/deploy-commands';
 
@@ -9,7 +10,18 @@ const client = new Client({
     intents: [Intents.FLAGS.GUILDS]
 })
 
-//instancie les commandes slash
+client.commands = new Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.ts'));
+const commands = [];
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    // Set a new item in the Collection
+    // With the key as the command name and the value as the exported module
+    client.commands.set(command.data.name, command);
+}
+
+// instancie les commandes slash
 registerCommands();
 
 // When the client is ready, run this code (only once)
