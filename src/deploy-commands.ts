@@ -5,7 +5,7 @@ import { Routes } from "discord-api-types/v9";
 import {SlashCommandBuilder} from "@discordjs/builders";
 
 type Command = {
-    data: SlashCommandBuilder
+    data: SlashCommandBuilder | unknown
 }
 
 const commands = [];
