@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const { DISCORD_TOKEN } = (process.env);
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./src/app/commands').filter(file => file.endsWith('.js'));
