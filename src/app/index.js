@@ -2,11 +2,15 @@
 require('dotenv').config();
 const { Client, Intents, Collection } = require ('discord.js');
 const fs = require('node:fs');
+const {Player} = require("discord-player");
 
 const { DISCORD_TOKEN } = (process.env);
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+
+// Create a new Player (you don't need any API Key)
+const player = new Player(client);
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./src/app/commands').filter(file => file.endsWith('.js'));
@@ -31,7 +35,7 @@ client.on('interactionCreate', async interaction => {
     if (!command) return;
 
     try {
-        await command.execute(interaction,client);
+        await command.execute(interaction,client,player);
     } catch (error) {
         console.error(error);
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });

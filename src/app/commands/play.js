@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require ('@discordjs/builders');
-const { Player } = require("discord-player");
 
 module.exports = {
 
@@ -11,10 +10,7 @@ module.exports = {
                 .setDescription('The song title')
                 .setRequired(true)
         ),
-    async execute(interaction, client) {
-        
-        // Create a new Player (you don't need any API Key)
-        const player = new Player(client);
+    async execute(interaction, client, player) {
 
         player.on("trackStart", (queue, track) => queue.metadata.channel.send(`🎶 | Now playing **${track.title}**!`));
         
@@ -31,7 +27,6 @@ module.exports = {
             }
         });
 
-        // verify vc connection
         try {
             if (!queue.connection) {
                 await queue.connect(interaction.member.voice.channel);
@@ -48,8 +43,9 @@ module.exports = {
         }).then(x => x.tracks[0]);
         if (!track) return await interaction.followUp({ content: `❌ | Track **${query}** not found!` });
 
-        queue.play(track);
+        await queue.play(track);
 
         return await interaction.followUp({ content: `⏱️ | Loading track **${track.title}**!` });
     },
+
 };
