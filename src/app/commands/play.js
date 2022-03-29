@@ -46,8 +46,6 @@ module.exports = {
 
 		if (queue.playing) {
 			queue.addTrack(track);
-			console.log(queue.tracks);
-			console.log(queue.tracks.length);
 			queue.metadata.channel.send(`Track ${track.title} added in the queue!`);
 		}
 		else {
