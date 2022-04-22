@@ -9,8 +9,12 @@ module.exports = {
 		const queue = player.getQueue(interaction.guild);
 
 		if (queue !== undefined) {
-			await queue.stop();
-			return await interaction.reply({ content: 'Bot stopped', ephemeral: true });
+			try {
+				await queue.stop();
+				return await interaction.reply({ content: 'Bot stopped', ephemeral: true });
+			} catch (e) {
+				console.error('Class stop - Fonction stop : ' , e)
+			}
 		}
 		else {
 			return await interaction.reply({ content: 'Le bot ne joue pas de musique', ephemeral: true });

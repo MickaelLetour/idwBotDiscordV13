@@ -12,6 +12,12 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 // Create a new Player (you don't need any API Key)
 const player = new Player(client);
 
+// add the trackStart event so when a song will be played this message will be sent
+// player.on('trackStart', (queue, track) => {
+// 	console.log(track);
+// 	// queue.metadata.channel.send(`🎶 | Now playing **${track.title}**!`)
+// });
+
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./src/app/commands').filter(file => file.endsWith('.js'));
 
@@ -24,7 +30,7 @@ for (const file of commandFiles) {
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log('Bot Started');
 });
 
 client.on('interactionCreate', async interaction => {

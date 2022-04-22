@@ -12,8 +12,6 @@ module.exports = {
 		),
 	async execute(interaction, client, player) {
 
-		player.on('trackStart', (queue, track) => queue.metadata.channel.send(`🎶 | Now playing **${track.title}**!`));
-
 		if (!interaction.member.voice.channelId) {
 			return await interaction.reply({ content: 'You are not in a voice channel!', ephemeral: true });
 		}
@@ -45,13 +43,39 @@ module.exports = {
 		if (!track) return await interaction.followUp({ content: `❌ | Track **${query}** not found!` });
 
 		if (queue.playing) {
-			queue.addTrack(track);
-			queue.metadata.channel.send(`Track ${track.title} added in the queue!`);
+			if (track.playlist) {
+				queue.metadata.channel.send(`Track ${track.playlist.title} added in the queue!`);
+				track.playlist.tracks.forEach((track) => {
+					queue.addTrack(track)
+				});
+			} else {
+				queue.metadata.channel.send(`Track ${track.title} added in the queue!`);
+				queue.addTrack(track);
+			}
 		}
 		else {
-			await queue.play(track);
+			if (track.playlist) {
+				try {
+					await queue.play(track.playlist.tracks.shift()).then(
+						queue.metadata.channel.send(`🎶 | Now playing **${track.title}**!`),
+						queue.metadata.channel.send(`Track ${track.playlist.title} added in the queue!`),
+					);
+					track.playlist.tracks.forEach((track) => {
+						queue.addTrack(track);
+					});
+				} catch (e) {
+					console.error('Class play - Fonction play : ', e)
+				}
+			} else {
+				try {
+					await queue.play(track).then(
+						queue.metadata.channel.send(`🎶 | Now playing **${track.title}**!`)
+					);
+				} catch (e) {
+					console.error('Class play - Fonction play : ', e)
+				}
+			}
 		}
-
 		return await interaction.followUp({ content: `⏱️ | Loading track **${track.title}**!` });
 	},
 

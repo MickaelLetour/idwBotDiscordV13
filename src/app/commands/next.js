@@ -17,11 +17,15 @@ module.exports = {
 
 		if (queue) {
 			if (queue.tracks.length > 0) {
-				return queue.skip();
+				try {
+					queue.metadata.channel.send(`🎶 | Now playing **${queue.tracks[0]}**!`);
+					return await queue.skip();
+				} catch (e) {
+					console.error('Class next - Fonction skip : ' , e)
+				}
 			} else {
 				return await interaction.reply({ content: 'Queue does\'nt exist' });
 			}
 		}
-
 	},
 };
